@@ -1,0 +1,264 @@
+function getGeneration(cells, generations){
+  if(generations==0){
+   return cells;
+  }
+  console.log("cells")
+  console.log(generations);
+  console.log(htmlize(cells));
+  for(var x = 0; x<generations; x++){
+    var count = 0;
+    var out = new Array(cells.length);
+    for(var i = 0; i<out.length; i++){
+      out[i]=Array.from(Array(cells[0].length), x=>0);
+    }
+    for(var i = 0; i<cells.length; i++){
+      for(var j = 0; j<cells[0].length; j++){
+        //TL Corner
+        if(i==0&&j==0){
+          count+=(cells[i+1][j]+cells[i+1][j+1]+cells[i][j+1]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        //BL Corner
+        if(i==0&&j==(cells[0].length-1)){
+          count+=(cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        //TR Corner
+        if(i==(cells.length-1)&&j==0){
+          count+=(cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        //TR Corner
+        if(i==(cells.length-1)&&j==(cells[0].length-1)){
+          count+=(cells[i][j-1]+cells[i-1][j-1]+cells[i-1][j]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        if(i==0){
+          count+=(cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j]+cells[i+1][j+1]+cells[i][j+1]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        if(i==(cells.length-1)){
+          count+=(cells[i][j-1]+cells[i-1][j-1]+cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1]);
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        if(j==0){
+          count+=(cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1]+cells[i+1][j+1]+cells[i+1][j])
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        if(j==(cells[0].length-1)){
+          count+=(cells[i-1][j]+cells[i-1][j-1]+cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j])
+          if(cells[i][j]==1&&(count==2||count==3)){
+            out[i][j]=1;
+          }else if(cells[i][j]==0&&count==3){
+            out[i][j]=1;
+          }else{
+            out[i][j]=0;
+          }
+          count=0;
+          continue;
+        }
+        count+=(cells[i-1][j]+cells[i+1][j]+cells[i-1][j-1]+cells[i+1][j-1]+cells[i-1][j+1]+cells[i+1][j+1]+cells[i][j-1]+cells[i][j+1]);
+        if(cells[i][j]==1&&(count==2||count==3)){
+          out[i][j]=1;
+        }else if(cells[i][j]==0&&count==3){
+          out[i][j]=1;
+        }else{
+          out[i][j]=0;
+        }
+        count=0;
+      }
+    }
+    console.log("out before expansions");
+    console.log(htmlize(out));
+    var aliveCount = 0;
+    var length = cells[0].length;
+    var depth = cells.length;
+    //LS
+    for(var i = 0; i<cells.length; i++){
+      if(cells[i][0]==1){
+        aliveCount++
+      }
+      if(cells[i][0]==0){
+        aliveCount=0;
+      }
+      if(aliveCount>2){
+        if(out[0].length==length){
+          for(var j = 0; j<cells.length; j++){
+            out[j].unshift(0);
+          }
+          out[i-1][0]=1;
+        }
+        if(out[0].length==(length+1)){
+          out[i-1][0]=1;
+        }
+      }
+    }
+    var length = out[0].length;
+    var depth = out.length;
+    aliveCount=0
+    //RS
+    for(var i = 0; i<cells.length; i++){
+      if(cells[i][cells[0].length-1]==1){
+        aliveCount++;
+      }
+      if(cells[i][cells[0].length-1]==0){
+        aliveCount=0;
+      }
+      if(aliveCount>2){
+        if(out[0].length==length){
+          for(var j = 0; j<cells.length; j++){
+            out[j].push(0);
+          }
+          out[i-1][out[0].length-1]=1;
+        }
+        if(out[0].length==(length+1)){
+          out[i-1][out[0].length-1]=1;
+        }
+      }
+    }
+    var length = out[0].length;
+    var depth = out.length;
+    aliveCount=0
+    //TS
+    for(var i = 0; i<cells[0].length; i++){
+      if(cells[0][i]==1){
+        aliveCount++;
+      }
+      if(cells[0][i]==0){
+        aliveCount=0;
+      }
+      if(aliveCount>2){
+        if(out.length==depth){
+          out.unshift(Array.from({length: cells[0].length}, x => 0));
+          out[0][i-1]=1;
+        }
+        if(out.length==(depth+1)){
+          out[0][i-1]=1;
+        }
+      }
+    }
+    var length = out[0].length;
+    var depth = out.length;
+    aliveCount=0
+    //BS
+    for(var i = 0; i<cells[0].length; i++){
+      if(cells[cells.length-1][i]==1){
+        aliveCount++;
+      }
+      if(cells[cells.length-1][i]==0){
+        aliveCount=0;
+      }
+      if(aliveCount>2){
+        if(out.length==depth){
+          out.push(Array.from({length: cells[0].length}, x => 0));
+          out[out.length-1][i-1]=1;
+        }
+        if(out.length==(depth+1)){
+          out[out.length-1][i-1]=1;
+        }
+      }
+    }
+    console.log("out")
+    console.log(htmlize(out));
+    cells=JSON.parse(JSON.stringify(out));
+    aliveCount=0
+  }
+  var isZero=0;
+  var edgeComplete=0;
+  console.log(out[0].length);
+  if (out[0].length>13){
+  return out;
+  }
+  for(var i = 0; i<out.length; i++){
+    for(var j = 0; j<out[0].length; j++){
+      if(out[i][j]==1&&edgeComplete==0){
+        isZero=1;
+        edgeComplete=1;
+        break;
+      }
+      if(out[i][j]==1&&edgeComplete==1){
+        isZero=1;
+        edgeComplete=0;
+        break;
+      }
+    }
+    if(isZero==0&&edgeComplete==0){
+      out.splice(i,1);
+      i--;
+    }
+    isZero=0;
+  }
+  isZero=0;
+  for(var i = 0; i<out[0].length; i++){
+    for(var j = 0; j<out.length; j++){
+      if(out[j][i]==1){
+        isZero=1;
+        break;
+      }
+    }
+    if(isZero==0){
+      for(var k = 0; k<out.length; k++){
+        out[k].splice(0,1);
+      }
+      i--;
+    }
+    isZero=0;
+  }
+  return out;
+}
